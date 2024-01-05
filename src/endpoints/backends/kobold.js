@@ -73,6 +73,9 @@ router.post('/generate', jsonParser, async function (request, response_generate)
             mirostat_tau: request.body.mirostat_tau,
             grammar: request.body.grammar,
             sampler_seed: request.body.sampler_seed,
+            dynatemp: request.body.dynatemp,
+            min_temp: request.body.min_temp,
+            max_temp: request.body.max_temp,
         };
         if (request.body.stop_sequence) {
             this_settings['stop_sequence'] = request.body.stop_sequence;

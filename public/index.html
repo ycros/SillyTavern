@@ -869,6 +869,29 @@
                                         </div>
                                         <hr class="wide100p">
                                     </div>
+                                    <div data-newbie-hidden name="dynaTempBlock-kobold" class="wide100p">
+                                        <h4 class="wide100p textAlignCenter" data-i18n="DynaTemp">DynaTemp
+                                            <div class=" fa-solid fa-circle-info opacity50p " title="Helpful tip coming soon."></div>
+                                        </h4>
+                                        <div class="flex-container flexFlowRow alignitemscenter gap10px flexShrink">
+                                            <div class="">
+                                                <label class="checkbox_label" for="dynatemp_kobold">
+                                                    <input type="checkbox" id="dynatemp_kobold" />
+                                                    <small data-i18n="dynatemp">Activate</small>
+                                                </label>
+                                            </div>
+                                            <div class="alignitemscenter flex-container marginBot5 flexFlowColumn flexGrow flexShrink gap0">
+                                                <small data-i18n="Min Temp">Min Temp</small>
+                                                <input class="neo-range-slider" type="range" id="min_temp_kobold" name="volume" min="0" max="5" step="0.01" />
+                                                <input class="neo-range-input" type="number" min="0" max="5" step="0.01" data-for="min_temp_kobold" id="min_temp_counter_kobold">
+                                            </div>
+                                            <div class="alignitemscenter flex-container marginBot5 flexFlowColumn flexGrow flexShrink gap0">
+                                                <small data-i18n="Max Temp">Max Temp</small>
+                                                <input class="neo-range-slider" type="range" id="max_temp_kobold" name="volume" min="0" max="5" step="0.01" />
+                                                <input class="neo-range-input" type="number" min="0" max="5" step="0.01" data-for="max_temp_kobold" id="max_temp_counter_kobold">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div data-newbie-hidden class="alignitemscenter justifyCenter flex-container flexFlowColumn flexBasis48p flexGrow flexShrink gap0">
                                         <label class="checkbox_label alignItemsBaseline" for="use_default_badwordsids">
                                             <input id="use_default_badwordsids" type="checkbox" />

@@ -61,6 +61,7 @@ const MIN_TOKENIZATION_KCPPVERSION = '1.41';
 const MIN_MIROSTAT_KCPPVERSION = '1.35';
 const MIN_GRAMMAR_KCPPVERSION = '1.44';
 const MIN_MIN_P_KCPPVERSION = '1.48';
+const MIN_DYNATEMP_KCPPVERSION = '1.54'; // TODO: Update once known.
 const KOBOLDCPP_ORDER = [6, 0, 1, 3, 4, 2, 5];
 
 export function formatKoboldUrl(value) {
@@ -98,6 +99,10 @@ export function loadKoboldSettings(preset) {
     if (Object.hasOwn(preset, 'use_default_badwordsids')) {
         kai_settings.use_default_badwordsids = preset.use_default_badwordsids;
         $('#use_default_badwordsids').prop('checked', kai_settings.use_default_badwordsids);
+    }
+    if (Object.hasOwn(preset, 'dynatemp')) {
+        kai_settings.dynatemp = preset.dynatemp;
+        $('#dynatemp_kobold').prop('checked', kai_settings.dynatemp);
     }
 }
 
@@ -336,6 +341,7 @@ export function setKoboldFlags(koboldUnitedVersion, koboldCppVersion) {
     kai_flags.can_use_mirostat = versionCompare(koboldCppVersion, MIN_MIROSTAT_KCPPVERSION);
     kai_flags.can_use_grammar = versionCompare(koboldCppVersion, MIN_GRAMMAR_KCPPVERSION);
     kai_flags.can_use_min_p = versionCompare(koboldCppVersion, MIN_MIN_P_KCPPVERSION);
+    kai_flags.can_use_dynatemp = versionCompare(koboldCppVersion, MIN_DYNATEMP_KCPPVERSION);
 }
 
 /**
@@ -383,6 +389,12 @@ jQuery(function () {
     $('#use_default_badwordsids').on('input', function () {
         const value = !!$(this).prop('checked');
         kai_settings.use_default_badwordsids = value;
+        saveSettingsDebounced();
+    });
+
+    $('#dynatemp_kobold').on('input', function () {
+        const value = !!$(this).prop('checked');
+        kai_settings.dynatemp = value;
         saveSettingsDebounced();
     });
 

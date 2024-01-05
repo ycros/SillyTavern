@@ -605,7 +605,9 @@ async function CreateZenSliders(elmnt) {
         decimals = 0;
     }
     if (sliderID == 'min_temp_textgenerationwebui' ||
-        sliderID == 'max_temp_textgenerationwebui') {
+        sliderID == 'max_temp_textgenerationwebui' ||
+        sliderID == 'min_temp_kobold' ||
+        sliderID == 'max_temp_kobold') {
         decimals = 2;
     }
     if (sliderID == 'eta_cutoff_textgenerationwebui' ||
@@ -639,7 +641,9 @@ async function CreateZenSliders(elmnt) {
         sliderID == 'penalty_alpha_textgenerationwebui' ||
         sliderID == 'length_penalty_textgenerationwebui' ||
         sliderID == 'min_temp_textgenerationwebui' ||
-        sliderID == 'max_temp_textgenerationwebui') {
+        sliderID == 'max_temp_textgenerationwebui' ||
+        sliderID == 'min_temp_kobold' ||
+        sliderID == 'max_temp_kobold') {
         numSteps = 50;
     }
     //customize off values

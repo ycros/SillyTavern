@@ -419,7 +419,10 @@
         "mirostat_tau": 5,
         "mirostat_eta": 0.1,
         "use_default_badwordsids": false,
-        "grammar": ""
+        "grammar": "",
+        "dynatemp": false,
+        "min_temp": 0.01,
+        "max_temp": 2.00
     },
     "oai_settings": {
         "preset_settings_openai": "Default",

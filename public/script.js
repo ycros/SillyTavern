@@ -3046,6 +3046,56 @@ class StreamingProcessor {
     }
 }
 
+const rawl3Instruct = {
+    "system_prompt": "",
+    "input_sequence": "<|start_header_id|>user<|end_header_id|>\n\n",
+    "output_sequence": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+    "first_output_sequence": "",
+    "last_output_sequence": "",
+    "system_sequence_prefix": "",
+    "system_sequence_suffix": "",
+    "stop_sequence": "<|eot_id|>",
+    "wrap": false,
+    "macro": true,
+    "names": false,
+    "names_force_groups": false,
+    "activation_regex": "",
+    "skip_examples": true,
+    "output_suffix": "<|eot_id|>",
+    "input_suffix": "<|eot_id|>",
+    "system_sequence": "<|start_header_id|>system<|end_header_id|>\n\n",
+    "system_suffix": "<|eot_id|>",
+    "user_alignment_message": "Let's get started. Please respond based on the information and instructions provided above.",
+    "last_system_sequence": "",
+    "system_same_as_user": false,
+    "name": "ycros-llama3-blank"
+};
+
+const rawQwenInstruct = {
+    "system_prompt": "",
+    "input_sequence": "<|im_start|>user\n",
+    "output_sequence": "<|im_start|>assistant\n",
+    "first_output_sequence": "",
+    "last_output_sequence": "",
+    "system_sequence_prefix": "",
+    "system_sequence_suffix": "",
+    "stop_sequence": "<|im_end|>",
+    "wrap": false,
+    "macro": true,
+    "names": false,
+    "names_force_groups": false,
+    "activation_regex": "",
+    "skip_examples": true,
+    "output_suffix": "<|im_end|>\n",
+    "input_suffix": "<|im_end|>\n",
+    "system_sequence": "<|im_start|>system\n",
+    "system_suffix": "<|im_end|>\n",
+    "user_alignment_message": "Let's get started. Please respond based on the information and instructions provided above.",
+    "last_system_sequence": "",
+    "system_same_as_user": false,
+    "name": "ycros-llama3-blank"
+};
+
 /**
  * Generates a message using the provided prompt.
  * @param {string} prompt Prompt to generate a message from
@@ -3066,6 +3116,7 @@ export async function generateRaw(prompt, api, instructOverride, quietToLoud, sy
     let originalResponseLength = -1;
     const isInstruct = power_user.instruct.enabled && api !== 'openai' && api !== 'novel' && !instructOverride;
     const isQuiet = true;
+    const instructObject = rawQwenInstruct;
 
     if (systemPrompt) {
         systemPrompt = substituteParams(systemPrompt);
@@ -3075,8 +3126,8 @@ export async function generateRaw(prompt, api, instructOverride, quietToLoud, sy
 
     prompt = substituteParams(prompt);
     prompt = api == 'novel' ? adjustNovelInstructionPrompt(prompt) : prompt;
-    prompt = isInstruct ? formatInstructModeChat(name1, prompt, false, true, '', name1, name2, false) : prompt;
-    prompt = isInstruct ? (prompt + formatInstructModePrompt(name2, false, '', name1, name2, isQuiet, quietToLoud)) : (prompt + '\n');
+    prompt = isInstruct ? formatInstructModeChat(name1, prompt, false, true, '', name1, name2, false, instructObject) : prompt;
+    prompt = isInstruct ? (prompt + formatInstructModePrompt(name2, false, '', name1, name2, isQuiet, quietToLoud, instructObject)) : (prompt + '\n');
 
     try {
         originalResponseLength = responseLengthCustomized ? saveResponseLength(api, responseLength) : -1;
@@ -3099,7 +3150,7 @@ export async function generateRaw(prompt, api, instructOverride, quietToLoud, sy
                 break;
             }
             case 'textgenerationwebui':
-                generateData = getTextGenGenerationData(prompt, amount_gen, false, false, null, 'quiet');
+                generateData = getTextGenGenerationData(prompt, amount_gen, false, false, null, 'quiet', true);
                 break;
             case 'openai': {
                 generateData = [{ role: 'user', content: prompt.trim() }];

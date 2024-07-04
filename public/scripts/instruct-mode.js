@@ -288,58 +288,59 @@ export const force_output_sequence = {
  * @param {boolean|number} forceOutputSequence Force to use first/last output sequence (if configured).
  * @returns {string} Formatted instruct mode chat message.
  */
-export function formatInstructModeChat(name, mes, isUser, isNarrator, forceAvatar, name1, name2, forceOutputSequence) {
-    let includeNames = isNarrator ? false : power_user.instruct.names;
+export function formatInstructModeChat(name, mes, isUser, isNarrator, forceAvatar, name1, name2, forceOutputSequence, instruct_override={}) {
+    const instruct = { ...power_user.instruct, ...instruct_override };
+    let includeNames = isNarrator ? false : instruct.names;
 
-    if (!isNarrator && power_user.instruct.names_force_groups && (selected_group || forceAvatar)) {
+    if (!isNarrator && instruct.names_force_groups && (selected_group || forceAvatar)) {
         includeNames = true;
     }
 
     function getPrefix() {
         if (isNarrator) {
-            return power_user.instruct.system_same_as_user ? power_user.instruct.input_sequence : power_user.instruct.system_sequence;
+            return instruct.system_same_as_user ? instruct.input_sequence : instruct.system_sequence;
         }
 
         if (isUser) {
-            return power_user.instruct.input_sequence;
+            return instruct.input_sequence;
         }
 
         if (forceOutputSequence === force_output_sequence.FIRST) {
-            return power_user.instruct.first_output_sequence || power_user.instruct.output_sequence;
+            return instruct.first_output_sequence || instruct.output_sequence;
         }
 
         if (forceOutputSequence === force_output_sequence.LAST) {
-            return power_user.instruct.last_output_sequence || power_user.instruct.output_sequence;
+            return instruct.last_output_sequence || instruct.output_sequence;
         }
 
-        return power_user.instruct.output_sequence;
+        return instruct.output_sequence;
     }
 
     function getSuffix() {
         if (isNarrator) {
-            return power_user.instruct.system_same_as_user ? power_user.instruct.input_suffix : power_user.instruct.system_suffix;
+            return instruct.system_same_as_user ? instruct.input_suffix : instruct.system_suffix;
         }
 
         if (isUser) {
-            return power_user.instruct.input_suffix;
+            return instruct.input_suffix;
         }
 
-        return power_user.instruct.output_suffix;
+        return instruct.output_suffix;
     }
 
     let prefix = getPrefix() || '';
     let suffix = getSuffix() || '';
 
-    if (power_user.instruct.macro) {
+    if (instruct.macro) {
         prefix = substituteParams(prefix, name1, name2);
         prefix = prefix.replace(/{{name}}/gi, name || 'System');
     }
 
-    if (!suffix && power_user.instruct.wrap) {
+    if (!suffix && instruct.wrap) {
         suffix = '\n';
     }
 
-    const separator = power_user.instruct.wrap ? '\n' : '';
+    const separator = instruct.wrap ? '\n' : '';
 
     // Don't include the name if it's empty
     const textArray = includeNames && name ? [prefix, `${name}: ${mes}` + suffix] : [prefix, mes + suffix];
@@ -454,38 +455,39 @@ export function formatInstructModeExamples(mesExamplesArray, name1, name2) {
  * @param {boolean} isQuietToLoud Is quiet to loud generation.
  * @returns {string} Formatted instruct mode last prompt line.
  */
-export function formatInstructModePrompt(name, isImpersonate, promptBias, name1, name2, isQuiet, isQuietToLoud) {
-    const includeNames = name && (power_user.instruct.names || (!!selected_group && power_user.instruct.names_force_groups)) && !(isQuiet && !isQuietToLoud);
+export function formatInstructModePrompt(name, isImpersonate, promptBias, name1, name2, isQuiet, isQuietToLoud, instruct_override={}) {
+    const instruct = { ...power_user.instruct, ...instruct_override };
+    const includeNames = name && (instruct.names || (!!selected_group && instruct.names_force_groups)) && !(isQuiet && !isQuietToLoud);
 
     function getSequence() {
         // User impersonation prompt
         if (isImpersonate) {
-            return power_user.instruct.input_sequence;
+            return instruct.input_sequence;
         }
 
         // Neutral / system / quiet prompt
         // Use a special quiet instruct sequence if defined, or assistant's output sequence otherwise
         if (isQuiet && !isQuietToLoud) {
-            return power_user.instruct.last_system_sequence || power_user.instruct.output_sequence;
+            return instruct.last_system_sequence || instruct.output_sequence;
         }
 
         // Quiet in-character prompt
         if (isQuiet && isQuietToLoud) {
-            return power_user.instruct.last_output_sequence || power_user.instruct.output_sequence;
+            return instruct.last_output_sequence || instruct.output_sequence;
         }
 
         // Default AI response
-        return power_user.instruct.last_output_sequence || power_user.instruct.output_sequence;
+        return instruct.last_output_sequence || instruct.output_sequence;
     }
 
     let sequence = getSequence() || '';
 
-    if (power_user.instruct.macro) {
+    if (instruct.macro) {
         sequence = substituteParams(sequence, name1, name2);
         sequence = sequence.replace(/{{name}}/gi, name || 'System');
     }
 
-    const separator = power_user.instruct.wrap ? '\n' : '';
+    const separator = instruct.wrap ? '\n' : '';
     let text = includeNames ? (separator + sequence + separator + `${name}:`) : (separator + sequence);
 
     // Quiet prompt already has a newline at the end
@@ -497,7 +499,7 @@ export function formatInstructModePrompt(name, isImpersonate, promptBias, name1,
         text += (includeNames ? promptBias : (separator + promptBias.trimStart()));
     }
 
-    return (power_user.instruct.wrap ? text.trimEnd() : text) + (includeNames ? '' : separator);
+    return (instruct.wrap ? text.trimEnd() : text) + (includeNames ? '' : separator);
 }
 
 /**
